@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Notes = require("../model/notaSchema");
 const UserSchema = mongoose.Schema({
   name: {
     type: String,
@@ -14,10 +14,12 @@ const UserSchema = mongoose.Schema({
     require: true,
   },
   createAt: {
-    type: String,
+    type: Date,
+    default: Date.now,
     require: true,
     minlength: 6,
   },
+  notes: [Notes],
 });
 
 module.exports = mongoose.model("User", UserSchema);
