@@ -2,10 +2,76 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
+const User = require("./model/userSchema");
 const port = 3000;
 app.use(express.urlencoded({ extends: true }));
 app.use(express.json());
 app.use(cors());
+
+// Rota para cadastrar usuario
+
+app.post("/singup", async (req, res) => {
+  try {
+    const { name, email, password, createAt, notes } = req.body;
+    const user = {
+      name,
+      email,
+      password,
+      createAt,
+      notes,
+    };
+    const response = await User.create(user);
+    res
+      .status(200)
+      .json({ message: "Usuario cadastrado com sucesso", user: response });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: "Erro ao se cadastrar", error: error.message });
+  }
+});
+
+//rota para pegar os usuarios
+app.get("/users", async (req, res) => {
+  try {
+    const response = await User.find();
+    if (!response || response.lenght === 0) {
+      return res.status(404).json({ message: "Sem usuario cadastrado" });
+    }
+    res.status(200).json({ data: response });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: "Erro ao carregar usuarios", error: error.message });
+  }
+});
+
+//Rota para adicionar nota para cada usuario
+app.post("/users/:userId/notes", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { title, content, tag, createAt } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario não encontrado!" });
+    }
+    const newNote = {
+      title,
+      content,
+      tag,
+      createAt,
+    };
+    user.notes.push(newNote);
+    await user.save();
+    res
+      .status(200)
+      .json({ message: "Nota adicionada com sucesso", note: newNote });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: "Erro ao Adicionar nota", error: error.message });
+  }
+});
 
 app.get("/", (req, res) => {
   res.json("ola mundo");

@@ -3,16 +3,16 @@ const mongoose = require("mongoose");
 const NoteSchema = mongoose.Schema({
   title: {
     type: String,
-    require: true,
+    required: true,
   },
   content: {
     type: String,
-    require: true,
+    required: true,
   },
 
   tag: {
     type: String,
-    require: false,
+    required: false,
   },
   createdAt: {
     type: Date,
