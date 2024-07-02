@@ -79,7 +79,7 @@ app.get("/", (req, res) => {
 
 mongoose
   .connect(
-    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp",
+    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp"
   )
   .then(() => {
     app.listen(port, () => {
