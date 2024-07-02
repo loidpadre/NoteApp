@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const app = express();
 const User = require("./model/userSchema");
 const port = 3000;
-app.use(express.urlencoded({ extends: false }));
 app.use(express.json());
 app.use(cors());
 
