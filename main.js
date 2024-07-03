@@ -45,6 +45,22 @@ app.get("/users", async (req, res) => {
       .json({ message: "Erro ao carregar usuarios", error: error.message });
   }
 });
+//rota para pegar um unico usuario
+
+app.get("/users/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario não encontrado" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res
+      .status(404)
+      .json({ message: "Erro ao buscar usuario", error: error.message });
+  }
+});
 
 //Rota para adicionar nota para cada usuario
 app.post("/users/:userId/notes", async (req, res) => {
