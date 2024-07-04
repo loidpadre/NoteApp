@@ -73,13 +73,50 @@ app.post("/users/:userId/notes", async (req, res) => {
   }
 });
 
+// rota para deletar usuario
+
+app.delete("/users/:userId/:noteId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+
+    const noteId = req.params.noteId;
+    // Encontre a nota dentro do array de notas do usuário
+    const noteToDelete = user.notes.find(
+      (note) => note._id.toString() === noteId
+    );
+
+    if (!noteToDelete) {
+      return res.status(404).json({ message: "Nota não encontrada" });
+    }
+
+    // Remova a nota do array de notas do usuário
+    user.notes = user.notes.filter((note) => note._id.toString() !== noteId);
+    await user.save();
+
+    // Envie uma resposta de sucesso
+    res
+      .status(200)
+      .json({ message: "Nota deletada com sucesso", data: noteToDelete });
+  } catch (error) {
+    // Captura de erros
+    res
+      .status(500)
+      .json({ message: "Erro ao deletar nota", error: error.message });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json("ola mundo");
 });
 
 mongoose
   .connect(
-    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp",
+    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp"
   )
   .then(() => {
     app.listen(port, () => {
