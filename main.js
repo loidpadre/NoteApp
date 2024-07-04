@@ -3,7 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const app = express();
 const User = require("./model/userSchema");
-const port = 3000;
+const port = 5000;
 app.use(express.urlencoded({ extends: true }));
 app.use(express.json());
 app.use(cors());
@@ -89,7 +89,6 @@ app.post("/users/:userId/notes", async (req, res) => {
   }
 });
 
-
 // rota para deletar nota
 
 app.delete("/users/:userId/:noteId", async (req, res) => {
@@ -126,15 +125,13 @@ app.delete("/users/:userId/:noteId", async (req, res) => {
       .json({ message: "Erro ao deletar nota", error: error.message });
   }
 });
-s
-
 app.get("/", (req, res) => {
   res.json("ola mundo");
 });
 
 mongoose
   .connect(
-    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp",
+    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp"
   )
   .then(() => {
     app.listen(port, () => {
