@@ -125,6 +125,44 @@ app.delete("/users/:userId/:noteId", async (req, res) => {
       .json({ message: "Erro ao deletar nota", error: error.message });
   }
 });
+//rota para editar
+app.put("/users/:userId/:noteId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+
+    const noteId = req.params.noteId;
+    const noteToUpdate = user.notes.find(
+      (note) => note._id.toString() === noteId,
+    );
+
+    if (!noteToUpdate) {
+      return res.status(404).json({ message: "Nota não encontrada" });
+    }
+
+    // Atualiza apenas os campos que foram fornecidos na requisição
+    if (req.body.title) {
+      noteToUpdate.title = req.body.title;
+    }
+    noteToUpdate.content = req.body.content;
+    noteToUpdate.tag = req.body.tag;
+
+    await user.save(); // Salva o usuário com a nota atualizada
+
+    res
+      .status(200)
+      .json({ message: "Nota editada com sucesso", note: noteToUpdate });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Erro ao editar nota", error: error.message });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json("ola mundo");
 });
