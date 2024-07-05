@@ -73,7 +73,7 @@ app.post("/users/:userId/notes", async (req, res) => {
   }
 });
 
-// rota para deletar usuario
+// rota para deletar nota
 
 app.delete("/users/:userId/:noteId", async (req, res) => {
   try {
@@ -87,7 +87,7 @@ app.delete("/users/:userId/:noteId", async (req, res) => {
     const noteId = req.params.noteId;
     // Encontre a nota dentro do array de notas do usuário
     const noteToDelete = user.notes.find(
-      (note) => note._id.toString() === noteId
+      (note) => note._id.toString() === noteId,
     );
 
     if (!noteToDelete) {
@@ -110,13 +110,48 @@ app.delete("/users/:userId/:noteId", async (req, res) => {
   }
 });
 
+// rota para edita nota
+
+app.put("/users/:userId/:noteId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario não encontrado" });
+    }
+    const noteId = req.params.noteId;
+    const noteToUpdate = user.notes.find(
+      (note) => note._id.toString() === noteId,
+    );
+    if (!noteToUpdate) {
+      return res.status(404).json({ message: "Nota não encontrada" });
+    }
+    if (noteToUpdate.title) {
+      noteToUpdate.title = req.body.title;
+    }
+    if (noteToUpdate.content) {
+      noteToUpdate.content = req.body.content;
+    }
+
+    noteToUpdate.tag = req.body.tag;
+    await user.save();
+    res
+      .status(200)
+      .json({ message: "Nota editada com sucesso", note: noteToUpdate });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Erro ao editar nota", error: error.message });
+  }
+});
+
 app.get("/", (req, res) => {
   res.json("ola mundo");
 });
 
 mongoose
   .connect(
-    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp"
+    "mongodb+srv://loidpadre:fMv2X8D1aewg2qgH@noteapp.9ivxjkd.mongodb.net/?retryWrites=true&w=majority&appName=NoteApp",
   )
   .then(() => {
     app.listen(port, () => {
