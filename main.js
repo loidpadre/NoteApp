@@ -129,9 +129,7 @@ app.put("/users/:userId/:noteId", async (req, res) => {
     if (noteToUpdate.title) {
       noteToUpdate.title = req.body.title;
     }
-    if (noteToUpdate.content) {
-      noteToUpdate.content = req.body.content;
-    }
+    noteToUpdate.content = req.body.content;
 
     noteToUpdate.tag = req.body.tag;
     await user.save();
